@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Form, Input, Button, Typography, Space } from 'antd';
 import { UserOutlined, MailOutlined } from '@ant-design/icons';
+import * as Sentry from '@sentry/react';
 
 const { Title } = Typography;
 
@@ -9,11 +10,15 @@ const AdminProfilePage = () => {
   const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = (values) => {
-    console.log('Admin Profile Submit:', values);
-    setLoading(true);
-    // Add logic to save admin profile data
-    setLoading(false);
-  };
+  console.log('Admin Profile Submit:', values);
+  setLoading(true);
+
+  // 🔴 Gây lỗi test gửi lên Sentry
+  throw new Error("Lỗi test từ AdminProfilePage để kiểm tra Sentry");
+
+  // setLoading(false);
+};
+
 
   return (
     <div className="p-6">

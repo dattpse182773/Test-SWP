@@ -12,7 +12,8 @@
   "dependencies": {
     "@react-google-maps/api": "^2.20.6",
     "@reduxjs/toolkit": "^2.8.2",
-    "@sentry/react": "^9.33.0",
+    "@sentry/react": "^9.34.0",
+    "@sentry/tracing": "^7.120.3",
     "@sentry/vite-plugin": "^3.5.0",
     "@tailwindcss/vite": "^4.1.7",
     "antd": "^5.25.2",
