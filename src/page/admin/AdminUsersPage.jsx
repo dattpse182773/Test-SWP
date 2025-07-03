@@ -11,7 +11,7 @@ import PhoneOutlined from '@ant-design/icons/lib/icons/PhoneOutlined';
 import api from '../../config/api';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import * as Sentry from '@sentry/react';
 const { Option } = Select;
 
 function AdminUsersPage() {
@@ -93,35 +93,41 @@ function AdminUsersPage() {
   };
 
   const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-      if (modalMode === 'add') {
-        // Add new user
-        const newUser = {
-          key: String(users.length + 1),
-          id: `U${String(users.length + 1).padStart(3, '0')}`,
-          ...values,
-          joinDate: new Date().toLocaleDateString('vi-VN'),
-          lastLogin: '-',
-        };
-        setUsers([...users, newUser]);
-        await api.post('/api/users', newUser);
-        toast.success('Thêm người dùng thành công!');
-      } else {
-        // Update existing user
-        const updatedUsers = users.map(user => 
-          user.key === selectedUser.key ? { ...user, ...values } : user
-        );
-        setUsers(updatedUsers);
-        await api.put(`/api/users/${selectedUser.id}`, values);
-        toast.success('Cập nhật thông tin thành công!');
-      }
-      setIsModalVisible(false);
-    } catch (error) {
-      console.error('Lỗi khi cập nhật người dùng:', error);
-      toast.error('Cập nhật thông tin người dùng thất bại. Vui lòng thử lại sau!');
+  try {
+    const values = await form.validateFields();
+
+    // Gây lỗi test và gửi lên Sentry — để test thôi, có thể xóa sau
+    if (values.name === 'test-error') {
+      throw new Error('Lỗi test từ AdminUsersPage');
     }
-  };
+
+    if (modalMode === 'add') {
+      const newUser = {
+        key: String(users.length + 1),
+        id: `U${String(users.length + 1).padStart(3, '0')}`,
+        ...values,
+        joinDate: new Date().toLocaleDateString('vi-VN'),
+        lastLogin: '-',
+      };
+      setUsers([...users, newUser]);
+      await api.post('/api/users', newUser);
+      toast.success('Thêm người dùng thành công!');
+    } else {
+      const updatedUsers = users.map(user =>
+        user.key === selectedUser.key ? { ...user, ...values } : user
+      );
+      setUsers(updatedUsers);
+      await api.put(`/api/users/${selectedUser.id}`, values);
+      toast.success('Cập nhật thông tin thành công!');
+    }
+
+    setIsModalVisible(false);
+  } catch (error) {
+    console.error('Lỗi khi xử lý người dùng:', error);
+    Sentry.captureException(error);
+    toast.error('Có lỗi xảy ra khi xử lý người dùng!');
+  }
+};
 
   const handleCancel = () => {
     setIsModalVisible(false);

@@ -47,6 +47,16 @@ import DoctorBloodInventoryPage from "./page/doctorpage/dashboard/BloodInventory
 import DoctorProfilePage from "./page/doctorpage/dashboard/ProfilePage";
 import DoctorSettingsPage from "./page/doctorpage/dashboard/SettingsPage";
 
+import * as Sentry from "@sentry/react";
+import { BrowserTracing } from "@sentry/tracing";
+
+// 🟢 Khởi tạo Sentry
+Sentry.init({
+  dsn: "https://b0c5fbd5c57d27383f10ce71a02a843d@o4509587694616576.ingest.de.sentry.io/4509587827982416", // 👈 thay bằng DSN thật của bạn
+  integrations: [Sentry.browserTracingIntegration()],
+  tracesSampleRate: 1.0,
+});
+
 const router = createBrowserRouter([
   {
     path: "/",
